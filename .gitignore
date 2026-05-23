@@ -1,0 +1,5 @@
+# misc
+*.tmp
+*.log
+*.bak
+*.swp

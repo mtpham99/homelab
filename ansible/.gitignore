@@ -1,0 +1,5 @@
+# ansible
+.collections/
+.facts_cache/
+
+.vault_pass

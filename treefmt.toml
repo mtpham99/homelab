@@ -1,0 +1,17 @@
+[formatter.prettier]
+command = "prettier"
+includes = ["*.md", "*.json", "*.yml", "*.yaml"]
+
+[formatter.nixfmt]
+command = "nixfmt"
+includes = ["*.nix"]
+
+[formatter.taplo]
+command = "taplo"
+options = ["fmt"]
+includes = ["*.toml"]
+
+[formatter.terraform-fmt]
+command = "tofu"
+options = ["fmt", "-recursive"]
+includes = ["*.tf"]

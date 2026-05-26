@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: treefmt
+        name: treefmt
+        entry: treefmt
+        language: system

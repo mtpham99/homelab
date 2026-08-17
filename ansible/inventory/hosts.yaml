@@ -1,0 +1,11 @@
+---
+all:
+  children:
+
+    mikrotik:
+      hosts:
+        rtr01:
+          ansible_host: 10.137.10.1
+        sw01:
+          ansible_host: 10.137.10.2
+...

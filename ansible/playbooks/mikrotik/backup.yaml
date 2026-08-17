@@ -1,0 +1,43 @@
+---
+- name: backup mikrotik devices
+  hosts: mikrotik
+  gather_facts: false
+
+  vars:
+    mikrotik_backups_dir: "{{ homelab_repo }}/backups/mikrotik"
+    mikrotik_export_show_sensitive: false
+
+  pre_tasks:
+    - name: create backups directory
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ mikrotik_backups_dir }}"
+        state: directory
+        mode: "0700"
+
+    - name: select backup timestamp
+      delegate_to: localhost
+      delegate_facts: true
+      run_once: true
+      ansible.builtin.set_fact:
+        mikrotik_backup_timestamp: "{{ now(utc=true).strftime('%Y%m%dT%H%M%SZ') }}"
+
+  tasks:
+    - name: export mikrotik config
+      no_log: "{{ mikrotik_export_show_sensitive | bool }}"
+      changed_when: false
+      check_mode: false
+      register: mikrotik_export
+      community.routeros.command:
+        commands: /export {{ 'show-sensitive' if (mikrotik_export_show_sensitive | bool) else 'hide-sensitive' }}
+
+    - name: write config to backup directory
+      delegate_to: localhost
+      no_log: "{{ mikrotik_export_show_sensitive | bool }}"
+      diff: "{{ not (mikrotik_export_show_sensitive | bool) }}"
+      ansible.builtin.copy:
+        dest: "{{ mikrotik_backups_dir }}/{{ hostvars['localhost']['mikrotik_backup_timestamp'] }}-{{ inventory_hostname }}.rsc"
+        mode: "0600"
+        content: "{{ mikrotik_export.stdout[0] }}\n"
+...

@@ -3,18 +3,6 @@ variable "routeros_hosturl" {
   type        = string
 }
 
-variable "routeros_username" {
-  description = "api username"
-  type        = string
-}
-
-variable "routeros_password" {
-  description = "api password"
-  type        = string
-  sensitive   = true
-  ephemeral   = true
-}
-
 variable "routeros_insecure" {
   description = "skip tls verification"
   type        = bool

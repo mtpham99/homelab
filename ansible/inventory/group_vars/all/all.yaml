@@ -1,0 +1,13 @@
+---
+# repository paths
+homelab_repo: "{{ ansible_config_file | dirname | dirname }}"
+
+# ansible template comment (e.g. first line of every j2 template: `{{ ansible_managed | comment }}`)
+ansible_managed: |-
+  this file is managed by ansible
+
+  template: {{ template_path }}
+  date: {{ template_run_date }}
+  user: {{ template_uid }}
+  host: {{ template_host }}
+...

@@ -31,6 +31,10 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
+    # env vars
+    export HOMELAB_REPO='${builtins.toString (builtins.dirOf (./.))}';
+    export SOPS_AGE_KEY_FILE="''${HOME}/.config/sops/age/keys.txt"
+
     # editor
     export EDITOR='${pkgs.neovim}/bin/nvim'
     export VISUAL='${pkgs.neovim}/bin/nvim'

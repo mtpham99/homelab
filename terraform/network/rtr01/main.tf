@@ -71,7 +71,7 @@ module "interfaces" {
 # --- mikrotik-wireguard ---
 
 data "sops_file" "wg_info" {
-  source_file = "${path.module}/../../../secrets/wireguard.yaml"
+  source_file = "${path.module}/../../../secrets/wireguard.enc.yaml"
 }
 
 module "wireguard" {

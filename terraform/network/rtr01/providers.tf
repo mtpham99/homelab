@@ -1,5 +1,5 @@
 ephemeral "sops_file" "creds" {
-  source_file = "${path.module}/../../../secrets/mikrotik.yaml"
+  source_file = "${path.module}/../../../secrets/mikrotik.enc.yaml"
 }
 
 provider "routeros" {

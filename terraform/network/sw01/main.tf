@@ -29,7 +29,7 @@ locals {
     }
 
     sfp-sfpplus1 = {
-      comment  = "node01-trunk"
+      comment  = "hci01-trunk"
       tagged   = local.trunk_vlans
       untagged = null
 
@@ -38,7 +38,7 @@ locals {
     }
 
     sfp-sfpplus2 = {
-      comment  = "node02-trunk"
+      comment  = "hci02-trunk"
       tagged   = local.trunk_vlans
       untagged = null
 
@@ -47,7 +47,7 @@ locals {
     }
 
     sfp-sfpplus3 = {
-      comment  = "node03-trunk"
+      comment  = "hci03-trunk"
       tagged   = local.trunk_vlans
       untagged = null
 
@@ -56,7 +56,7 @@ locals {
     }
 
     sfp-sfpplus4 = {
-      comment  = "node01-storage"
+      comment  = "hci01-storage"
       tagged   = local.storage_vlans
       untagged = null
 
@@ -65,7 +65,7 @@ locals {
     }
 
     sfp-sfpplus5 = {
-      comment  = "node02-storage"
+      comment  = "hci02-storage"
       tagged   = local.storage_vlans
       untagged = null
 
@@ -74,7 +74,7 @@ locals {
     }
 
     sfp-sfpplus6 = {
-      comment  = "node03-storage"
+      comment  = "hci03-storage"
       tagged   = local.storage_vlans
       untagged = null
 

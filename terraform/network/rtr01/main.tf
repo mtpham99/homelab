@@ -1,3 +1,5 @@
+# --- mikrotik interfaces ---
+
 locals {
   vlans = {
     mgmt        = { id = 10, svi = "10.137.10.1/24" }
@@ -63,4 +65,34 @@ module "interfaces" {
   vlans      = local.vlans
   interfaces = local.interfaces
   bonds      = local.bonds
+}
+
+
+# --- mikrotik-wireguard ---
+
+data "sops_file" "wg_info" {
+  source_file = "${path.module}/../../../secrets/wireguard.yaml"
+}
+
+module "wireguard" {
+  source   = "../modules/mikrotik-wireguard"
+  name     = "murkymirror-mgmt"
+  subnet   = "10.137.210.0/24"
+  port     = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.port
+  endpoint = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.endpoint
+
+  peers = {
+    grunfeld = {
+      peer_address  = "10.137.210.11"
+      peer_dns      = "10.137.210.1"
+      public_key    = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.peers.grunfeld.pk
+      preshared_key = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.peers.grunfeld.psk
+    }
+    mobile = {
+      peer_address  = "10.137.210.21"
+      peer_dns      = "10.137.210.1"
+      public_key    = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.peers.mobile.pk
+      preshared_key = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.peers.mobile.psk
+    }
+  }
 }

@@ -3,6 +3,10 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+  - repo: https://github.com/betterleaks/betterleaks
+    rev: v1.7.4
+    hooks:
+      - id: betterleaks
   - repo: local
     hooks:
       - id: treefmt

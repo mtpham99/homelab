@@ -21,6 +21,7 @@ pkgs.mkShell {
     pkgs.neovim
 
     pkgs.pre-commit
+    pkgs.betterleaks
     pkgs.treefmt
     pkgs.prettier
     pkgs.nixfmt

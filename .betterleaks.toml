@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "sops config and encrypted files"
+paths = [
+  '''^secrets/\.sops\.ya?ml$''',
+  '''^secrets/.+\.enc\.ya?ml$''',
+  '''^ansible/inventory/group_vars/.+\.sops\.ya?ml$''',
+]
+
+[[allowlists]]
+description = "documentation"
+paths = ['''^docs/.+''']

@@ -1,6 +1,5 @@
 {
   pkgs ? import <nixpkgs> { },
-  useOpenTofu ? true,
   ...
 }:
 
@@ -11,7 +10,7 @@ pkgs.mkShell {
     pkgs.git
     pkgs.ansible
     pkgs.ansible-lint
-    (if useOpenTofu then pkgs.opentofu else pkgs.terraform)
+    pkgs.opentofu
 
     pkgs.gnupg
     pkgs.pinentry-curses

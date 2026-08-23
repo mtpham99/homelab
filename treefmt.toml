@@ -11,7 +11,7 @@ command = "taplo"
 options = ["fmt"]
 includes = ["*.toml"]
 
-[formatter.terraform-fmt]
+[formatter.terraform]
 command = "tofu"
-options = ["fmt", "-recursive"]
+options = ["fmt"]
 includes = ["*.tf"]

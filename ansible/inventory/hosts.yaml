@@ -1,7 +1,6 @@
 ---
 all:
   children:
-
     mikrotik:
       hosts:
         rtr01:

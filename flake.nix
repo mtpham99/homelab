@@ -7,6 +7,8 @@
 
     git-hooks.url = "github:cachix/git-hooks.nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    disko.url = "github:nix-community/disko";
   };
 
   outputs =
@@ -16,6 +18,7 @@
       nixpkgs-stable,
       git-hooks,
       treefmt-nix,
+      disko,
       ...
     }@inputs:
     let
@@ -42,10 +45,26 @@
           };
         }
       );
+
+      mkHciHostConfig =
+        hostname:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            ./nix/modules/hci
+            { networking.hostName = hostname; }
+          ];
+        };
     in
     {
       # `nixos-rebuild { build | switch | ... } --flake .#<hostname>`
-      nixosConfigurations = { };
+      nixosConfigurations = {
+        hci01 = mkHciHostConfig "hci01";
+        hci02 = mkHciHostConfig "hci02";
+        hci03 = mkHciHostConfig "hci03";
+      };
 
       # `nix develop`
       devShells = forAllSystemsPkgs (pkgs: {

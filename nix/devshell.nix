@@ -32,7 +32,7 @@ pkgs.mkShell {
 
   shellHook = ''
     # env vars
-    export HOMELAB_REPO='${builtins.toString (builtins.dirOf (./.))}';
+    export HOMELAB_REPO="''$(git rev-parse --show-toplevel 2>/dev/null || pwd)";
     export SOPS_AGE_KEY_FILE="''${HOME}/.config/sops/age/keys.txt"
 
     # editor

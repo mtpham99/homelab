@@ -97,3 +97,21 @@ module "wireguard" {
     }
   }
 }
+
+module "wireguard-stellarspire" {
+  source      = "../modules/mikrotik-wireguard"
+  name        = "stellarspire-sscs"
+  subnet      = "10.137.240.0/27"
+  port        = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.port
+  endpoint    = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.endpoint
+  private_key = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.sk
+
+  peers = {
+    meridianprime = {
+      peer_address  = "10.137.240.11"
+      peer_dns      = "10.137.240.1"
+      public_key    = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.meridianprime.pk
+      preshared_key = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.meridianprime.psk
+    }
+  }
+}

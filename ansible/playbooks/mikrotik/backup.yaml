@@ -16,7 +16,7 @@
         state: directory
         mode: "0700"
 
-    - name: select backup timestamp
+    - name: set backup timestamp
       delegate_to: localhost
       delegate_facts: true
       run_once: true
@@ -40,4 +40,12 @@
         dest: "{{ mikrotik_backups_dir }}/{{ hostvars['localhost']['mikrotik_backup_timestamp'] }}-{{ inventory_hostname }}.rsc"
         mode: "0600"
         content: "{{ mikrotik_export.stdout[0] }}\n"
+
+    - name: run mikrotik system backup
+      no_log: "{{ mikrotik_export_show_sensitive | bool }}"
+      changed_when: false
+      check_mode: false
+      register: mikrotik_backup
+      community.routeros.command:
+        commands: "/system backup save name={{ hostvars['localhost']['mikrotik_backup_timestamp'] }}-{{ inventory_hostname }}.backup"
 ...

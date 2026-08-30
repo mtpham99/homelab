@@ -75,11 +75,12 @@ data "sops_file" "wg_info" {
 }
 
 module "wireguard" {
-  source   = "../modules/mikrotik-wireguard"
-  name     = "murkymirror-mgmt"
-  subnet   = "10.137.210.0/24"
-  port     = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.port
-  endpoint = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.endpoint
+  source      = "../modules/mikrotik-wireguard"
+  name        = "murkymirror-mgmt"
+  subnet      = "10.137.210.0/24"
+  port        = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.port
+  endpoint    = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.endpoint
+  private_key = yamldecode(data.sops_file.wg_info.raw).wg_murkymirror_mgmt.sk
 
   peers = {
     grunfeld = {

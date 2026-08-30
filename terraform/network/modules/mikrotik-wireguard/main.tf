@@ -4,6 +4,7 @@ resource "routeros_interface_wireguard" "wg_server" {
   comment     = var.name
   name        = var.name
   listen_port = var.port
+  private_key = var.private_key
 }
 
 resource "routeros_ip_address" "wg_server" {

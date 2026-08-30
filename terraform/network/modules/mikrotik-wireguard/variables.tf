@@ -32,6 +32,13 @@ variable "endpoint" {
   sensitive   = true
 }
 
+variable "private_key" {
+  description = "server's private key"
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
 
 # --- wireguard peers ---
 

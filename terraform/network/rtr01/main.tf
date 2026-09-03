@@ -113,5 +113,11 @@ module "wireguard-stellarspire" {
       public_key    = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.meridianprime.pk
       preshared_key = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.meridianprime.psk
     }
+    sscs35782 = {
+      peer_address  = "10.137.240.21"
+      peer_dns      = "10.137.240.1"
+      public_key    = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.sscs35782.pk
+      preshared_key = yamldecode(data.sops_file.wg_info.raw).wg_stellarspire_sscs.peers.sscs35782.psk
+    }
   }
 }

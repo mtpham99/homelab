@@ -49,7 +49,7 @@
 
       # `nix develop`
       devShells = forAllSystemsPkgs (pkgs: {
-        default = import ./nix/devshell.nix { inherit pkgs; };
+        default = import ./nix/shells/devshell.nix { inherit pkgs; };
       });
 
       # `nix flake check`

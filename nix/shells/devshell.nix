@@ -16,6 +16,8 @@ pkgs.mkShell {
     pkgs.pinentry-curses
     pkgs.sops
     pkgs.age
+    pkgs.ssh-to-age
+    pkgs.mkpasswd
 
     pkgs.neovim
 

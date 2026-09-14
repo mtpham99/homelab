@@ -9,6 +9,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
     disko.url = "github:nix-community/disko";
+    sops.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -19,6 +20,7 @@
       git-hooks,
       treefmt-nix,
       disko,
+      sops,
       ...
     }@inputs:
     let
@@ -53,6 +55,7 @@
           specialArgs = { inherit inputs; };
           modules = [
             disko.nixosModules.disko
+            sops.nixosModules.sops
             ./nix/hosts/${hostname}
             { networking.hostName = hostname; }
           ];
@@ -61,9 +64,9 @@
     {
       # `nixos-rebuild { build | switch | ... } --flake .#<hostname>`
       nixosConfigurations = {
-        # hci01 = mkHciHostConfig "hci01";
-        # hci02 = mkHciHostConfig "hci02";
-        # hci03 = mkHciHostConfig "hci03";
+        hci01 = mkHciHostConfig "hci01";
+        hci02 = mkHciHostConfig "hci02";
+        hci03 = mkHciHostConfig "hci03";
       };
 
       # `nix develop`

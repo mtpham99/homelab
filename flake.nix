@@ -66,6 +66,7 @@
               nativeBuildInputs = [ pkgs.betterleaks ];
             }
             ''
+              export HOME=$(mktemp -d)
               mkdir $out
               cd ${self}
               betterleaks dir ./. --config ./.betterleaks.toml

@@ -11,7 +11,7 @@
     # hardware configuration via nixos-facter
     hardware.facter.reportPath = ./hci03-facter.json;
 
-    hci.disks.osDisk = "/dev/disk/by-path/pci-0000:58:00.0-nvme-1";
+    hci.disks.systemDisk = "/dev/disk/by-path/pci-0000:58:00.0-nvme-1";
     hci.network.ipOctet = 13;
     hci.network.interfaces.dataTrunk = "pci-0000:02:00.0";
     hci.network.interfaces.storageTrunk = "pci-0000:02:00.1";

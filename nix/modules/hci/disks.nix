@@ -17,8 +17,16 @@ let
       mountOptions = [ "umask=0077" ];
     };
   };
-  rootPart = {
+
+  lvmPart = {
     size = "100%";
+    content = {
+      type = "lvm_pv";
+      vg = "vg_main";
+    };
+  };
+  rootLv = {
+    size = cfg.rootLvSize;
     content = {
       type = "filesystem";
       format = "ext4";
@@ -29,10 +37,17 @@ in
 {
   options = {
     hci.disks = {
-      osDisk = lib.mkOption {
+      systemDisk = lib.mkOption {
         type = lib.types.strMatching "^/dev/disk/by-(id|uuid|path)/[^/]+$";
         example = "/dev/disk/by-id/<DISK IDENTIFIER>";
-        description = "'by-<id | uuid | path>' path of disk used by 'disko' to wipe and partition for os install";
+        description = "'by-<id | uuid | path>' path of disk used by 'disko' to wipe and partition for os/system install";
+      };
+
+      rootLvSize = lib.mkOption {
+        type = lib.types.str;
+        description = "size of lv used for '/'";
+        default = "100%";
+        example = "50%";
       };
     };
   };
@@ -41,12 +56,16 @@ in
     disko.devices = {
       disk."system" = {
         type = "disk";
-        device = cfg.osDisk;
+        device = cfg.systemDisk;
         content = {
           type = "gpt";
           partitions."esp" = espPart;
-          partitions."root" = rootPart;
+          partitions."lvm" = lvmPart;
         };
+      };
+      lvm_vg."vg_main" = {
+        type = "lvm_vg";
+        lvs."root" = rootLv;
       };
     };
   };

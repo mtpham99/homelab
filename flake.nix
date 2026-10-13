@@ -67,6 +67,10 @@
         hci01 = mkHciHostConfig "hci01";
         hci02 = mkHciHostConfig "hci02";
         hci03 = mkHciHostConfig "hci03";
+
+        hcitest01 = mkHciHostConfig "hcitest01";
+        hcitest02 = mkHciHostConfig "hcitest02";
+        hcitest03 = mkHciHostConfig "hcitest03";
       };
 
       # `nix develop`

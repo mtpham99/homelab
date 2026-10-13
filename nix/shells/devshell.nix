@@ -12,6 +12,8 @@ pkgs.mkShell {
     pkgs.ansible-lint
     pkgs.opentofu
 
+    pkgs.nixos-anywhere
+
     pkgs.gnupg
     pkgs.pinentry-curses
     pkgs.sops

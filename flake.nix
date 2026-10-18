@@ -3,13 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11-small";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05-small";
 
     git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
+
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     sops.url = "github:Mic92/sops-nix";
+    sops.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -80,7 +86,7 @@
 
       # `nix flake check`
       checks = forAllSystemsPkgs (pkgs: {
-        git-hooks = git-hooks.lib.${pkgs.system}.run {
+        git-hooks = git-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
           src = ./.;
           hooks = {
             trim-trailing-whitespace.enable = true;
@@ -97,10 +103,12 @@
               cd ${self}
               betterleaks dir ./. --config ./.betterleaks.toml
             '';
-        treefmt = treefmtEval.${pkgs.system}.config.build.check self;
+        treefmt = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
 
       # `nix fmt`
-      formatter = forAllSystemsPkgs (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+      formatter = forAllSystemsPkgs (
+        pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper
+      );
     };
 }

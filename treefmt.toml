@@ -1,5 +1,6 @@
 [formatter.prettier]
 command = "prettier"
+options = ["--write"]
 includes = ["*.md", "*.json", "*.yml", "*.yaml"]
 
 [formatter.nixfmt]

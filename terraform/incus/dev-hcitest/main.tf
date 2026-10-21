@@ -73,11 +73,11 @@ resource "incus_instance" "nodes" {
     "cloud-init.user-data" = <<-EOT
       #cloud-config
       package_update: true
-      packages: [openssh-server, curl]
+      packages: [openssh-server]
       disable_root: false
       users:
         - name: root
-          lock_passwd: false
+          lock_passwd: true
           ssh_authorized_keys: ${jsonencode(var.root_ssh_authkeys)}
     EOT
   }

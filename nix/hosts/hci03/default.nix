@@ -5,7 +5,10 @@
   ...
 }:
 {
-  imports = [ ../../modules/hci ];
+  imports = [
+    ../../modules/hci
+    ../hci-cluster.nix
+  ];
 
   config = {
     # hardware configuration via nixos-facter
@@ -14,7 +17,6 @@
     # hci configs
     hci.disks.systemDisk = "/dev/disk/by-path/pci-0000:58:00.0-nvme-1";
     hci.disks.rootLvSize = "200G";
-    hci.network.ipOctet = 13;
     hci.network.interfaces.dataTrunk = "pci-0000:02:00.0";
     hci.network.interfaces.storageTrunk = "pci-0000:02:00.1";
     hci.network.interfaces.oobMgmt = "pci-0000:59:00.0";

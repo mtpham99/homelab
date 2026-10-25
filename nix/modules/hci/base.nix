@@ -6,10 +6,51 @@
 }:
 let
   cfg = config.hci.base;
+
+  ipv4Option =
+    description:
+    lib.mkOption {
+      type = lib.types.strMatching "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$";
+      inherit description;
+      example = "192.168.0.1/24";
+    };
 in
 {
   options = {
     hci.base = {
+      cluster = lib.mkOption {
+        type = lib.types.attrsOf (
+          lib.types.submodule {
+            options.ipv4 = {
+              host = ipv4Option "ipv4 address on host (in-band) mgmt network";
+              cephCluster = ipv4Option "ipv4 address on ceph cluster network";
+              cephPublic = ipv4Option "ipv4 address on ceph public network";
+              oobMgmt = ipv4Option "ipv4 address on oob (out-of-band) mgmt network";
+            };
+          }
+        );
+        description = "cluster definition attrset";
+        example = {
+          "node01" = {
+            ipv4.host = "192.168.1.11/24";
+            ipv4.cephCluster = "192.168.2.11/24";
+            ipv4.cephPublic = "192.168.3.11/24";
+            ipv4.oobMgmt = "192.168.0.11/24";
+          };
+          "node02" = {
+            ipv4.host = "192.168.1.12/24";
+            ipv4.cephCluster = "192.168.2.12/24";
+            ipv4.cephPublic = "192.168.3.12/24";
+            ipv4.oobMgmt = "192.168.0.12/24";
+          };
+          "node03".ipv4 = {
+            ipv4.host = "192.168.1.13/24";
+            ipv4.cephCluster = "192.168.2.13/24";
+            ipv4.cephPublic = "192.168.3.13/24";
+            ipv4.oobMgmt = "192.168.0.13/24";
+          };
+        };
+      };
     };
   };
 

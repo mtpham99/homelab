@@ -7,6 +7,14 @@
 let
   cfg = config.hci.network;
 
+  ipv4NoPrefixOption =
+    description:
+    lib.mkOption {
+      type = lib.types.strMatching "^([0-9]{1,3}\\.){3}[0-9]{1,3}$";
+      inherit description;
+      example = "192.168.0.1";
+    };
+
   ifaceByPciOption =
     description:
     lib.mkOption {
@@ -18,16 +26,14 @@ in
 {
   options = {
     hci.network = {
-      ipOctet = lib.mkOption {
-        type = lib.types.ints.between 1 254;
-        description = "fourth octet of node's ip addresses";
-      };
-
       interfaces = {
         dataTrunk = ifaceByPciOption "pci path of iface used for data trunk";
         storageTrunk = ifaceByPciOption "pci path of iface used for storage trunk";
         oobMgmt = ifaceByPciOption "pci path of iface used for out-of-band management";
       };
+
+      gateway = ipv4NoPrefixOption "gateway ipv4 address";
+      dns = ipv4NoPrefixOption "dns ipv4 address";
     };
   };
 
@@ -88,9 +94,9 @@ in
           "50-vlan50" = {
             matchConfig.Name = "vlan50";
 
-            address = [ "10.137.50.${toString cfg.ipOctet}/24" ];
-            gateway = [ "10.137.50.1" ];
-            dns = [ "10.137.50.1" ];
+            address = [ config.hci.base.cluster."${config.networking.hostName}".ipv4.host ];
+            gateway = [ cfg.gateway ];
+            dns = [ cfg.dns ];
 
             networkConfig = staticNetwork;
             linkConfig.MTUBytes = 1500;
@@ -112,7 +118,7 @@ in
           "50-vlan40" = {
             matchConfig.Name = "vlan40";
 
-            address = [ "10.137.40.${toString cfg.ipOctet}/24" ];
+            address = [ config.hci.base.cluster."${config.networking.hostName}".ipv4.cephCluster ];
 
             networkConfig = staticNetwork;
             linkConfig.MTUBytes = 9000;
@@ -121,7 +127,7 @@ in
           "50-vlan41" = {
             matchConfig.Name = "vlan41";
 
-            address = [ "10.137.41.${toString cfg.ipOctet}/24" ];
+            address = [ config.hci.base.cluster."${config.networking.hostName}".ipv4.cephPublic ];
 
             networkConfig = staticNetwork;
             linkConfig.MTUBytes = 9000;

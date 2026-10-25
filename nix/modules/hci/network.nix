@@ -77,6 +77,8 @@ in
           "10-oob-mgmt" = {
             matchConfig.Path = cfg.interfaces.oobMgmt;
 
+            address = [ config.hci.base.cluster."${config.networking.hostName}".ipv4.oobMgmt ];
+
             networkConfig = staticNetwork;
             linkConfig.MTUBytes = 1500;
             linkConfig.RequiredForOnline = false;

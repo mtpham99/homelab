@@ -19,17 +19,17 @@ incus host
 │   │                         nat · dhcp
 │   │
 │   └── eth0 (enp5s0)         oob management
-│                             172.16.0.2{N} (static dhcp lease)
+│                             172.16.0.1{N} (static dhcp lease)
 │
 │
 └── hcitest-trunks            no host ip · isolated · mtu 9000
     │
     ├── eth1 (enp6s0)         data trunk
-    │   └── vlan 50           10.137.50.2{N}/24
+    │   └── vlan 50           172.16.1.1{N}/24
     │
     └── eth2 (enp7s0)         storage trunk
-        ├── vlan 40           10.137.40.2{N}/24
-        └── vlan 41           10.137.41.2{N}/24
+        ├── vlan 40           172.16.2.1{N}/24
+        └── vlan 41           172.16.3.1{N}/24
 ```
 
 Network configuration is the primary discrepancy between `hci[01-03]` and `hcitest[01-03]`. `hcitest` uses the `oob mgmt` NIC for default gateway and DNS; this is done to avoid requiring the incus host to have connectivity to the real vlan 50 or emulating the entirety of the homelab network virtually. Instead, use the default `incusbr0` bridge with NAT.
@@ -74,7 +74,7 @@ tofu init
 
 # verify
 incus list
-./scripts/hciadmin-ssh-agent-wrap.sh ssh root@172.16.0.2{N} nixos-version
+./scripts/hciadmin-ssh-agent-wrap.sh ssh root@172.16.0.1{N} nixos-version
 ```
 
 ### Bootstrap Facter (Hardware) Reports
@@ -91,9 +91,9 @@ cd terraform/incus/dev-hcitest
 2. `kexec` each node into the installer and generate facter report:
 
 ```bash
-# E.g. hcitest01 (172.16.0.21)
+# E.g. hcitest01 (172.16.0.11)
 NODE=hcitest01
-NODE_IP=172.16.0.21
+NODE_IP=172.16.0.11
 ./scripts/hciadmin-ssh-agent-wrap.sh \
     nixos-anywhere --flake "../../../.#${NODE}" --phases kexec \
         --generate-hardware-config nixos-facter "../../../nix/hosts/${NODE}/${NODE}-facter.json" \

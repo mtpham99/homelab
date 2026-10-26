@@ -3,9 +3,9 @@ locals {
   sops_file    = "${local.homelab_repo}/secrets/hcitest.enc.yaml"
 
   nodes = {
-    hcitest01 = { ip = "172.16.0.21" }
-    hcitest02 = { ip = "172.16.0.22" }
-    hcitest03 = { ip = "172.16.0.23" }
+    hcitest01 = { ip = "172.16.0.11" }
+    hcitest02 = { ip = "172.16.0.12" }
+    hcitest03 = { ip = "172.16.0.13" }
   }
 
   storage_pool = "default"

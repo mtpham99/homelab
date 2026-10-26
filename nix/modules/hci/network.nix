@@ -38,6 +38,10 @@ in
   };
 
   config = {
+    networking.firewall.enable = true;
+    networking.firewall.logRefusedPackets = true;
+    networking.nftables.enable = true;
+
     networking.useDHCP = false;
     hardware.facter.detected.dhcp.enable = false;
 

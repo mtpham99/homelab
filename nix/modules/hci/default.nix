@@ -4,5 +4,6 @@
     ./secrets.nix
     ./base.nix
     ./network.nix
+    ./ceph.nix
   ];
 }

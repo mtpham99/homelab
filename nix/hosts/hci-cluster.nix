@@ -28,4 +28,22 @@
       ipv4.oobMgmt = "10.137.10.13/24";
     };
   };
+
+  hci.ceph = {
+    clusterNetwork = "10.137.40.0/24";
+    publicNetwork = "10.137.41.0/24";
+
+    clusterId = "0fc4ea88-b2c4-47dc-bb66-5dfb9d74ae63";
+
+    monNodes = [
+      "hci01"
+      "hci02"
+      "hci03"
+    ];
+    mdsNodes = [
+      "hci01"
+      "hci02"
+      "hci03"
+    ];
+  };
 }

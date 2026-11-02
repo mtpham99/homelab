@@ -75,6 +75,13 @@ in
     {
       environment.systemPackages = [ pkgs.ceph ];
 
+      # install custom ceph-bootstrap utils
+      systemd.tmpfiles.rules = [
+        "d /root/ceph-bootstrap 0750 root root -"
+
+        "L+ /root/ceph-bootstrap/01-ceph-mon.sh - - - - ${./ceph-bootstrap/01-ceph-mon.sh}"
+      ];
+
       # ceph admin keyring
       sops.secrets."ceph/client_admin_key" = { };
       sops.templates."ceph.client.admin.keyring" = {
@@ -90,8 +97,10 @@ in
       };
 
       # ceph monitor keyring
+      # staged with ceph-bootstrap utils and installed via monitor bootstrap
       sops.secrets."ceph/mon_key" = lib.mkIf isCephMon { };
       sops.templates."ceph.mon.keyring" = lib.mkIf isCephMon {
+        path = "/root/ceph-bootstrap/ceph.mon.keyring";
         content = ''
           [mon.]
             key = ${config.sops.placeholder."ceph/mon_key"}

@@ -23,6 +23,7 @@
     hci.network.interfaces.dataTrunk = "pci-0000:06:00.0";
     hci.network.interfaces.storageTrunk = "pci-0000:07:00.0";
     hci.network.interfaces.oobMgmt = "pci-0000:05:00.0";
+    hci.ceph.osds = [ "0" ];
 
     # hcitest[0x] quirks: enable incus agent for monitoring/management
     virtualisation.incus.agent.enable = true;

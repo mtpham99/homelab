@@ -80,6 +80,7 @@ in
         "d /root/ceph-bootstrap 0750 root root -"
 
         "L+ /root/ceph-bootstrap/01-ceph-mon.sh - - - - ${./ceph-bootstrap/01-ceph-mon.sh}"
+        "L+ /root/ceph-bootstrap/02-ceph-mgr.sh - - - - ${./ceph-bootstrap/02-ceph-mgr.sh}"
       ];
 
       # ceph admin keyring

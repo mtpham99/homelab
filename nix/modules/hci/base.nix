@@ -128,5 +128,10 @@ in
         }
       ];
     };
+
+    services.chrony = {
+      enable = true;
+      servers = [ "pool.ntp.org" ];
+    };
   };
 }

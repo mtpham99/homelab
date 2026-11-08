@@ -168,6 +168,10 @@ in
         mon = {
           enable = isCephMon;
           daemons = [ hostname ];
+
+          extraConfig = {
+            "auth allow insecure global id reclaim" = "false";
+          };
         };
         mgr = {
           enable = isCephMon;

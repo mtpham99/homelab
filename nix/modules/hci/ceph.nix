@@ -81,6 +81,7 @@ in
 
         "L+ /root/ceph-bootstrap/01-ceph-mon.sh - - - - ${./ceph-bootstrap/01-ceph-mon.sh}"
         "L+ /root/ceph-bootstrap/02-ceph-mgr.sh - - - - ${./ceph-bootstrap/02-ceph-mgr.sh}"
+        "L+ /root/ceph-bootstrap/03-ceph-osd.sh - - - - ${./ceph-bootstrap/03-ceph-osd.sh}"
       ];
 
       # ceph admin keyring
@@ -107,7 +108,20 @@ in
             key = ${config.sops.placeholder."ceph/mon_key"}
             caps mon = "allow *"
         ''
-        + config.sops.templates."ceph.client.admin.keyring".content;
+        + config.sops.templates."ceph.client.admin.keyring".content
+        + config.sops.templates."ceph.bootstrap-osd.keyring".content;
+      };
+
+      # ceph bootstrap-osd keyring
+      sops.secrets."ceph/bootstrap_osd_key" = lib.mkIf isCephOsd { };
+      sops.templates."ceph.bootstrap-osd.keyring" = lib.mkIf isCephOsd {
+        path = "/root/ceph-bootstrap/ceph.bootstrap-osd.keyring";
+        content = ''
+          [client.bootstrap-osd]
+            key = ${config.sops.placeholder."ceph/bootstrap_osd_key"}
+            caps mgr = "allow r"
+            caps mon = "profile bootstrap-osd"
+        '';
       };
 
       # firewall

@@ -3,7 +3,10 @@
 
   inputs = {
     nixpkgs-hci.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-hci-ceph.url = "github:NixOS/nixpkgs/nixos-26.05";
+
     nixpkgs-hcitest.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-hcitest-ceph.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     nixpkgs-tools.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -24,7 +27,9 @@
     {
       self,
       nixpkgs-hci,
+      nixpkgs-hci-ceph,
       nixpkgs-hcitest,
+      nixpkgs-hcitest-ceph,
       nixpkgs-tools,
       git-hooks,
       treefmt-nix,
@@ -77,7 +82,7 @@
               system = "x86_64-linux";
             in
             hostname:
-            channels@{ os-nixpkgs, ... }:
+            channels@{ os-nixpkgs, ceph-nixpkgs, ... }:
             os-nixpkgs.lib.nixosSystem {
               inherit system;
               specialArgs = {
@@ -88,14 +93,17 @@
                 sops.nixosModules.sops
                 ./nix/hosts/${hostname}
                 { networking.hostName = hostname; }
+                { hci.ceph.package = ceph-nixpkgs.legacyPackages.${system}.ceph; }
               ];
             };
 
           hci-channels = {
             os-nixpkgs = nixpkgs-hci;
+            ceph-nixpkgs = nixpkgs-hci-ceph;
           };
           hcitest-channels = {
             os-nixpkgs = nixpkgs-hcitest;
+            ceph-nixpkgs = nixpkgs-hcitest-ceph;
           };
         in
         {

@@ -60,6 +60,12 @@ in
           "1"
         ];
       };
+
+      package = lib.mkOption {
+        type = lib.types.package;
+        default = pkgs.ceph;
+        description = "the ceph package to use";
+      };
     };
   };
 
@@ -73,7 +79,13 @@ in
       cephClusterIp = node: stripSubnetPrefix config.hci.base.cluster.${node}.ipv4.cephCluster;
     in
     {
-      environment.systemPackages = [ pkgs.ceph ];
+      environment.systemPackages = [ cfg.package ];
+      services.ceph.mon.package = lib.mkDefault cfg.package;
+      services.ceph.mgr.package = lib.mkDefault cfg.package;
+      services.ceph.osd.package = lib.mkDefault cfg.package;
+      services.ceph.mds.package = lib.mkDefault cfg.package;
+      services.ceph.rgw.package = lib.mkDefault cfg.package;
+      services.ceph.global.mgrModulePath = lib.mkDefault "${cfg.package.lib}/lib/ceph/mgr";
 
       # install custom ceph-bootstrap utils
       systemd.tmpfiles.rules = [
@@ -210,7 +222,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
-              ExecStart = "${pkgs.ceph}/bin/ceph-volume lvm activate --all --no-systemd";
+              ExecStart = "${cfg.package}/bin/ceph-volume lvm activate --all --no-systemd";
             };
           };
         }

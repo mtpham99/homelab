@@ -131,7 +131,9 @@ in
 
     services.chrony = {
       enable = true;
-      servers = [ "pool.ntp.org" ];
+      servers = [
+        "10.137.10.1" # rtr01
+      ];
     };
   };
 }

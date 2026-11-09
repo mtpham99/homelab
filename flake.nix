@@ -58,7 +58,9 @@
         hostname:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            flake-inputs = inputs;
+          };
           modules = [
             disko.nixosModules.disko
             sops.nixosModules.sops
@@ -68,7 +70,7 @@
         };
     in
     {
-      # `nixos-rebuild { build | switch | ... } --flake .#<hostname>`
+      # `nixos-rebuild < build | switch | ... > --flake .#<hostname>`
       nixosConfigurations = {
         hci01 = mkHciHostConfig "hci01";
         hci02 = mkHciHostConfig "hci02";

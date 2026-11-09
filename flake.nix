@@ -28,6 +28,17 @@
       ...
     }@inputs:
     let
+      # pure nix implementation of nixpkgs.lib.genAttrs
+      # see: https://noogle.dev/f/lib/genAttrs/#implementation
+      genAttrs =
+        names: fn:
+        builtins.listToAttrs (
+          builtins.map (name: {
+            inherit name;
+            value = fn name;
+          }) names
+        );
+
       allSystems = [
         "x86_64-linux"
         "x86_64-darwin"
@@ -36,7 +47,7 @@
       ];
 
       pkgsForSystem = system: import nixpkgs { inherit system; };
-      forAllSystems = fn: nixpkgs.lib.genAttrs allSystems fn;
+      forAllSystems = fn: genAttrs allSystems fn;
       forAllSystemsPkgs = fn: forAllSystems (system: fn (pkgsForSystem system));
 
       treefmtEval = forAllSystemsPkgs (

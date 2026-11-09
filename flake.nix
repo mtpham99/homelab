@@ -2,25 +2,30 @@
   description = "mtpham99's homelab flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-hci.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-hcitest.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nixpkgs-tools.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     git-hooks.url = "github:cachix/git-hooks.nix";
-    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs-tools";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs-tools";
 
     disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko.inputs.nixpkgs.follows = "nixpkgs-tools";
 
     sops.url = "github:Mic92/sops-nix";
-    sops.inputs.nixpkgs.follows = "nixpkgs";
+    sops.inputs.nixpkgs.follows = "nixpkgs-tools";
   };
 
   outputs =
     {
       self,
-      nixpkgs,
+      nixpkgs-hci,
+      nixpkgs-hcitest,
+      nixpkgs-tools,
       git-hooks,
       treefmt-nix,
       disko,
@@ -46,11 +51,11 @@
         "aarch64-darwin"
       ];
 
-      pkgsForSystem = system: import nixpkgs { inherit system; };
       forAllSystems = fn: genAttrs allSystems fn;
-      forAllSystemsPkgs = fn: forAllSystems (system: fn (pkgsForSystem system));
+      forAllSystemsPkgs =
+        input-nixpkgs: fn: forAllSystems (system: fn (input-nixpkgs.legacyPackages.${system}));
 
-      treefmtEval = forAllSystemsPkgs (
+      treefmtEval = forAllSystemsPkgs nixpkgs-tools (
         pkgs:
         treefmt-nix.lib.evalModule (pkgs) {
           programs.prettier.enable = true;
@@ -62,41 +67,54 @@
           };
         }
       );
-
-      mkHciHostConfig =
-        hostname:
-        nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            flake-inputs = inputs;
-          };
-          modules = [
-            disko.nixosModules.disko
-            sops.nixosModules.sops
-            ./nix/hosts/${hostname}
-            { networking.hostName = hostname; }
-          ];
-        };
     in
     {
       # `nixos-rebuild < build | switch | ... > --flake .#<hostname>`
-      nixosConfigurations = {
-        hci01 = mkHciHostConfig "hci01";
-        hci02 = mkHciHostConfig "hci02";
-        hci03 = mkHciHostConfig "hci03";
+      nixosConfigurations =
+        let
+          mkHciHostConfig =
+            let
+              system = "x86_64-linux";
+            in
+            hostname:
+            channels@{ os-nixpkgs, ... }:
+            os-nixpkgs.lib.nixosSystem {
+              inherit system;
+              specialArgs = {
+                flake-inputs = inputs;
+              };
+              modules = [
+                disko.nixosModules.disko
+                sops.nixosModules.sops
+                ./nix/hosts/${hostname}
+                { networking.hostName = hostname; }
+              ];
+            };
 
-        hcitest01 = mkHciHostConfig "hcitest01";
-        hcitest02 = mkHciHostConfig "hcitest02";
-        hcitest03 = mkHciHostConfig "hcitest03";
-      };
+          hci-channels = {
+            os-nixpkgs = nixpkgs-hci;
+          };
+          hcitest-channels = {
+            os-nixpkgs = nixpkgs-hcitest;
+          };
+        in
+        {
+          hci01 = mkHciHostConfig "hci01" hci-channels;
+          hci02 = mkHciHostConfig "hci02" hci-channels;
+          hci03 = mkHciHostConfig "hci03" hci-channels;
+
+          hcitest01 = mkHciHostConfig "hcitest01" hcitest-channels;
+          hcitest02 = mkHciHostConfig "hcitest02" hcitest-channels;
+          hcitest03 = mkHciHostConfig "hcitest03" hcitest-channels;
+        };
 
       # `nix develop`
-      devShells = forAllSystemsPkgs (pkgs: {
+      devShells = forAllSystemsPkgs nixpkgs-tools (pkgs: {
         default = import ./nix/shells/devshell.nix { inherit pkgs; };
       });
 
       # `nix flake check`
-      checks = forAllSystemsPkgs (pkgs: {
+      checks = forAllSystemsPkgs nixpkgs-tools (pkgs: {
         git-hooks = git-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
           src = ./.;
           hooks = {
@@ -118,7 +136,7 @@
       });
 
       # `nix fmt`
-      formatter = forAllSystemsPkgs (
+      formatter = forAllSystemsPkgs nixpkgs-tools (
         pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper
       );
     };
